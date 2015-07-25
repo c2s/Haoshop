@@ -1,0 +1,27 @@
+<extend name="Common:index"/>
+<block name="list">
+    <button  class="ajax_post" url="{:U('changeStatus')}">删除</button>
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th style="width: 50px"><input type="checkbox" class="selectAll">序号 </th>
+                        <th>送货方式名称</th>
+                        <th>价格</th>
+                        <th>是否默认</th>
+                        <th>简介</th>
+                        <th>操作</th>
+        </tr>
+        <volist name="rows" id="row">
+            <tr>
+                <td class="first-cell"><input type="checkbox" name="id[]" value="{$row.id}" class="id">{$row.id} </td>
+                                <td class="first-cell">{$row.name}</td>
+                                <td class="first-cell">{$row.price}</td>
+                                <td class="first-cell">{$row.is_default}</td>
+                                <td class="first-cell">{$row.intro}</td>
+                                <td align="center">
+                    <a href="{:U('edit',array('id'=>$row['id']))}" title="编辑">编辑</a> |
+                    <a class="ajax_get" href="{:U('changeStatus',array('id'=>$row['id']))}" title="移除">移除</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+</block>

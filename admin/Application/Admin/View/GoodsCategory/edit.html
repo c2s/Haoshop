@@ -1,0 +1,113 @@
+<extend name="Common:edit"/>
+<block name="css">
+    <link href="__ZTREE__/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        ul.ztree {
+            margin-top: 10px;
+            border: 1px solid #617775;
+            background: #f0f6e4;
+            width: 220px;
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+    </style>
+</block>
+<block name="form">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">分类名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">父分类</td>
+                <td>
+                    <input type="text" id="parent_text" maxlength="60" disabled/>
+                    <input type="hidden" id="parent_id" name="parent_id" value="{$parent_id}">
+                    <ul id="treeDemo" class="ztree"></ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">描述</td>
+                <td>
+                    <textarea name="intro" cols="60" rows="4">{$intro}</textarea>
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">状态</td>
+                <td>
+                    <input class="status" type="radio" name="status" value="1"/> 是<input class="status" type="radio"
+                                                                                         name="status" value="0"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="60" value="{$sort|default=20}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><br/>
+                    <input type="hidden" name="id" value="{$id}"/>
+                    <input type="submit" class="button" value=" 确定 "/>
+                    <input type="reset" class="button" value=" 重置 "/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="js">
+    <script type="text/javascript" src="__ZTREE__/js/jquery.ztree.core-3.5.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            //>>1.树的设置
+            var setting = {
+                data: {
+                    simpleData: {
+                        enable: true,
+                        pIdKey: "parent_id"
+                    }
+                },
+                callback: {
+                    //event事件对象, treeId标签的id     treeNode是点击的节点对象
+                    onClick: function(event, treeId, treeNode){
+                        $('#parent_text').val(treeNode.name);
+                        $('#parent_id').val(treeNode.id);  //真正提交给服务器的父分类id
+                    }
+                }
+            };
+        //>>2.树中所需要的数据
+        var zNodes = {$rows};
+        var zTree   = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+        <empty name='id'>  //添加时默认选中第一个节点
+            zTree.expandAll(true); //全部展开
+            //默认选择第一个节点.
+            var nodes = zTree.getNodes();
+            if (nodes.length>0) {
+                //向父分类的文本框和隐藏域中设置 name,id
+                $('#parent_text').val(nodes[0].name);
+                $('#parent_id').val(nodes[0].id);  //真正提交给服务器的父分类id
+                zTree.selectNode(nodes[0]);
+            }
+        <else/>
+            //编辑时 ,需要根据parent_id找到父分类节点然后选中
+             var parent_id = {$parent_id} ;
+             var parentNode = zTree.getNodeByParam('id',parent_id);
+            zTree.selectNode(parentNode);
+            $('#parent_text').val(parentNode.name);
+            $('#parent_id').val(parentNode.id);  //真正提交给服务器的父分类id
+        </empty>
+
+        });
+    </script>
+</block>

@@ -1,0 +1,108 @@
+<extend name="Common:edit"/>
+<block name="css">
+    <link href="__UPLOADIFY__/uploadify.css" rel="stylesheet" type="text/css" />
+</block>
+<block name="form">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">品牌名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}" />
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">品牌网址</td>
+                <td>
+                    <input type="text" name="url" maxlength="60" value="{$url}" />
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">LOGO</td>
+                <td>
+                    <input type="file" name="upload_logo" id="upload_logo"/>
+                    <input type="hidden" name="logo" value="{$logo}" id="logo">
+                </td>
+            </tr>
+            <tr  class="upload-img-tr" style="display: none;">
+                <td class="label"></td>
+                <td>
+                    <div class="upload-img-box">
+                        <div class="upload-pre-item">
+                        <img src="__BRAND__{$logo}">
+                        </div></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">品牌描述</td>
+                <td>
+                    <textarea  name="intro" cols="60" rows="4">{$intro}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="40" size="15" value="{$sort|default=20}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">是否显示</td>
+                <td>
+                    <input class="status" type="radio" name="status" value="1"/> 是
+                    <input  class="status" type="radio" name="status" value="0"/> 否(当品牌下还没有商品的时候，首页及分类页的品牌区将不会显示该品牌。)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><br />
+                    <input type="hidden" name="id" value="{$id}"/>
+                    <input type="submit" class="button ajax_post" value=" 确定 " />
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="js">
+    <script type="text/javascript" src="__UPLOADIFY__/jquery.uploadify.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+
+
+            <notempty name='logo'>
+                $('.upload-img-tr').show();
+            </notempty>
+
+            /**
+             * 将一个上传表单元素变成一个上传插件
+             * $('#file_upload'):根据id找到上传表单元素
+             */
+             setTimeout(function(){  //解决导致浏览器崩溃的情况
+                 $('#upload_logo').uploadify({
+                     'swf'      : '/Public/Admin/uploadify/uploadify.swf',  //指定flash的路径
+                     'uploader' : "{:U('Upload/index')}",   //上传文件时使用的请求地址
+                     'width'    : 145,//指定按钮的宽度
+                     'height'    : 25,//指定按钮的宽度
+                     'buttonText': '选择图片',  //按钮上的文本
+                     'debug'     :true,   //是否调试
+                     'removeTimeout' : 1,
+//              'fileObjName'     :'Filedata',   //上传文件的表单元素名字, 在服务器上需要通过:$_FILES['Filedata']
+                     'formData'      : {'dir' : 'brand'},  ///上传文件时指定额外发送给服务器的post参数.
+                     'multi'    : false, //该插件是否支持多文件上传
+                     'fileTypeExts' : '*.gif; *.jpg; *.png', //指定文件上传的类型
+                     'fileSizeLimit' : '2MB',  //限制上传的大小
+                     'onUploadSuccess' : function(file, data, response) {
+                        $('.upload-img-box img').attr('src','__BRAND__/'+data);
+                         $('.upload-img-tr').show();  //让预览显示出来
+                         $('#logo').val(data); //将上传后的路径保存到隐藏域名中,为了表单提交时保存到数据库中
+                     },
+                     'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                         alert('上传失败!');
+                     }
+                 });
+             },50);
+
+        });
+    </script>
+</block>

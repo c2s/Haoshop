@@ -1,0 +1,41 @@
+<extend name="Common:index"/>
+<block name="css">
+    <link href="__TREEGRID__/jquery.treegrid.css" rel="stylesheet" type="text/css" />
+</block>
+
+<block name="searchForm">
+
+</block>
+<block name="list">
+    <table cellpadding="3" cellspacing="1" class="treegrid">
+        <tr>
+            <th>分类名称</th>
+            <th>描述</th>
+            <th>状态</th>
+            <th>排序</th>
+            <th>操作</th>
+        </tr>
+        <volist name="rows" id="row">
+            <tr  class="treegrid-{$row.id}  <neq name='row.level' value='2'>treegrid-parent-{$row.parent_id}</neq>  ">
+                <td class="first-cell">{$row.name}</td>
+                <td class="first-cell">{$row.intro}</td>
+                <td align="center"><a class="ajax_get"
+                                      href="{:U('changeStatus',array('id'=>$row['id'],'status'=>1-$row['status']))}"><img
+                        src="__IMG__/{$row.status}.gif" alt=""/></a></td>
+                <td class="first-cell">{$row.sort}</td>
+                <td align="center">
+                    <a href="{:U('edit',array('id'=>$row['id']))}" title="编辑">编辑</a> |
+                    <a class="ajax_get" href="{:U('changeStatus',array('id'=>$row['id']))}" title="移除">移除</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+</block>
+<block name="js">
+    <script type="text/javascript" src="__TREEGRID__/jquery.treegrid.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('.treegrid').treegrid();
+        });
+    </script>
+</block>

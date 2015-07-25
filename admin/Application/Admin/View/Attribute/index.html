@@ -1,0 +1,55 @@
+<extend name="Common:index"/>
+
+<block name="addLink">
+    <span class="action-span"><a href="{:U('add',array('goods_type_id'=>I('get.goods_type_id')))}">添加{$meta_title}</a></span>
+</block>
+
+<block name="searchForm">
+    <div class="form-div">
+        类型: {:arr2select('goods_type_id',$goodsTypes,I('get.goods_type_id'))}
+    </select>
+    </div>
+</block>
+
+<block name="list">
+    <button  class="ajax_post" url="{:U('changeStatus')}">删除</button>
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th style="width: 50px"><input type="checkbox" class="selectAll">序号 </th>
+                        <th>属性名称</th>
+                        <th>商品类型</th>
+                        <th>类型</th>
+                        <th>录入方式</th>
+                        <th>描述</th>
+                        <th>状态</th>
+                        <th>排序</th>
+                        <th>操作</th>
+        </tr>
+        <volist name="rows" id="row">
+            <tr>
+                <td class="first-cell"><input type="checkbox" name="id[]" value="{$row.id}" class="id">{$row.id} </td>
+                                <td class="first-cell">{$row.name}</td>
+                                <td class="first-cell">{$row.goods_type_name}</td>
+                                <td class="first-cell">{$row.attribute_type}</td>
+                                <td class="first-cell">{$row.input_type}</td>
+                                <td class="first-cell">{$row.intro}</td>
+                <td align="center"><a class="ajax_get" href="{:U('changeStatus',array('id'=>$row['id'],'status'=>1-$row['status']))}"><img src="__IMG__/{$row.status}.gif" alt=""/></a></td>                <td class="first-cell">{$row.sort}</td>
+                                <td align="center">
+                    <a href="{:U('edit',array('id'=>$row['id']))}" title="编辑">编辑</a> |
+                    <a class="ajax_get" href="{:U('changeStatus',array('id'=>$row['id']))}" title="移除">移除</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+</block>
+<block name="js">
+    <script type="text/javascript">
+        $(function () {
+            $('.goods_type_id').change(function () {
+                var goodsTypeId = $(this).val();
+                location.href='{:U()}?goods_type_id='+goodsTypeId;
+
+            });
+        });
+    </script>
+</block>

@@ -1,0 +1,1 @@
+curl http://www.shop.com/index.php/Cron/clicknumRedisToMysql

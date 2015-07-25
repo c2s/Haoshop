@@ -1,0 +1,34 @@
+<extend name="Common:index"/>
+<block name="addLink">
+    <span class="action-span"><a href="{$Think.cookie.__forward__}">商品列表</a></span>
+</block>
+<block name="searchForm">
+</block>
+<block name="list">
+    <form action="{:U()}" method="post">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th style="width: 50px"><input type="checkbox" class="selectAll">序号 </th>
+            <volist name="headers" id="header">
+                <th>{$header.name}</th>
+            </volist>
+            <th>库存</th>
+            <th>价格</th>
+        </tr>
+            <volist name="rows" id="row">
+            <tr>
+                <td class="first-cell"><input   {:in_array($row['goods_attribute_ids'],array_keys($products))?'checked':''}      type="checkbox" name="goods_attribute_ids[]" value="{$row.goods_attribute_ids}" class="id"></td>
+                <volist name="row" id="info">
+                    <neq name="key" value="goods_attribute_ids">
+                     <td align="center">{$info}</td>
+                    </neq>
+                </volist>
+                <td align="center"><input value="{$products[$row['goods_attribute_ids']]['stock']}" type="text" name="stock[{$row.goods_attribute_ids}]" size="5"/></td>
+                <td align="center"><input value="{$products[$row['goods_attribute_ids']]['price']}" type="text" name="price[{$row.goods_attribute_ids}]" size="5"/></td>
+            </tr>
+            </volist>
+    </table>
+        <input type="hidden" name="goods_id" value="{$Think.get.goods_id}">
+        <div align="center"><input type="submit" value="提交"> </div>
+        </form>
+</block>

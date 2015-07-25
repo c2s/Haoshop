@@ -1,0 +1,138 @@
+<extend name="Common:edit"/>
+<block name="listLink">
+    <span class="action-span"><a href="{:U('index',array('goods_type_id'=>I('get.goods_type_id')))}">{:mb_substr($meta_title,2,NULL,'utf-8')}列表</a></span>
+</block>
+<block name="form">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">属性名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">商品类型</td>
+                <td>
+                    <!--
+                     编辑时使用$goods_type_id默认选中
+                     添加的时候使用 I('get.goods_type_id') 默认选中
+                     isset($goods_type_id)?$goods_type_id:I('get.goods_type_id')
+                    -->
+                    {:arr2select("goods_type_id",$goodsTypes,isset($goods_type_id)?$goods_type_id:I('get.goods_type_id'))}
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">类型</td>
+                <td>
+                    <input class="attribute_type" type="radio" name="attribute_type" value="1"/> 单值
+                    <input class="attribute_type"  type="radio" name="attribute_type"  value="2"/> 多值
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">录入方式</td>
+                <td>
+                    <input class="input_type" type="radio" name="input_type" value="1"/> 手工录入
+                    <input class="input_type"  type="radio" name="input_type"  value="2"/> 从下面的列表中选择
+                    <input class="input_type" type="radio" name="input_type" value="3"/> 多行文本框
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">可选值</td>
+                <td>
+                    <textarea class="option_values" name="option_values" cols="60" rows="4" disabled>{$option_values}</textarea>
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">描述</td>
+                <td>
+                    <textarea name="intro" cols="60" rows="4">{$intro}</textarea>
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">状态</td>
+                <td>
+                    <input class="status" type="radio" name="status" value="1"/> 是<input class="status" type="radio"
+                                                                                         name="status" value="0"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="60" value="{$sort|default=20}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><br/>
+                    <input type="hidden" name="id" value="{$id}"/>
+                    <input type="submit" class="button ajax_post" value=" 确定 "/>
+                    <input type="reset" class="button" value=" 重置 "/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="js">
+    <script type="text/javascript">
+        $(function(){
+            //默认选中类型和录入方式
+            $('.attribute_type').val([{$attribute_type|default=1}]);
+            $('.input_type').val([{$input_type|default=1}]);
+
+
+
+            <notempty name='id'>
+            /*
+             * 根据用户选中的 类型和录入方式设置  文本框的状态
+             */
+                 clickAttribute_type();
+            </notempty>
+
+            $(".input_type").click(function(){
+                    var attribute_type = $('.attribute_type').val();
+                    if(attribute_type==1){      //判断类型为单值
+                        var input_type = $(this).val();
+                        if(input_type!=2){      //并且录入放是为手工录入或者多行文本
+                            $('.option_values').prop('disabled',true);
+                        }else{
+                            $('.option_values').prop('disabled',false);
+                        }
+                    }
+            });
+
+        /**
+         * 根据用户选中的 类型和录入方式设置  文本框的状态
+         */
+            function clickAttribute_type(){
+                var attribute_type =  $('.attribute_type:checked').val();
+                if(attribute_type==2){ //表示多值
+                    //只能够选中从下面的列表中选中
+                    $('.input_type').val([2]);
+                    //把其他的两个禁用掉,不让选择
+                    $('.input_type[value!=2]').prop('disabled',true);
+                    $('.option_values').prop('disabled',false);
+                }else{
+                    //单值的情况下
+                    $('.input_type[value!=2]').prop('disabled',false);
+                }
+            }
+
+            $('.attribute_type').click(clickAttribute_type);
+
+
+        });
+    </script>
+</block>

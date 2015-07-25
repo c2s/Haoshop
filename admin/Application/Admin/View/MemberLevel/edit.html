@@ -1,0 +1,70 @@
+<extend name="Common:edit"/>
+<block name="form">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+                        <tr>
+                <td class="label">会员级别名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">折扣率</td>
+                <td>
+                    <input type="text" name="discount" maxlength="60" value="{$discount}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">下限经验值</td>
+                <td>
+                    <input type="text" name="low" maxlength="60" value="{$low}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">上限经验值</td>
+                <td>
+                    <input type="text" name="high" maxlength="60" value="{$high}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">状态</td>
+                <td>
+                    <input  type="radio" name="status" value="1" class="status"/> 是<input  type="radio" name="status" value="0"  class="status"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">描述</td>
+                <td>
+                    <textarea  name="intro" cols="60" rows="4">{$intro}</textarea>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="60" value="{$sort|default=2}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+                        <tr>
+                <td colspan="2" align="center"><br />
+                    <input type="hidden" name="id" value="{$id}"/>
+                    <input type="submit" class="button ajax_post" value=" 确定 " />
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>

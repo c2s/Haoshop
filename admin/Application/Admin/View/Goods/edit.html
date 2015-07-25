@@ -1,0 +1,614 @@
+<extend name="Common:edit"/>
+<block name="css">
+    <link href="__UPLOADIFY__/uploadify.css" rel="stylesheet" type="text/css" />
+    <link href="__ZTREE__/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        ul.ztree {
+            margin-top: 10px;
+            border: 1px solid #617775;
+            background: #f0f6e4;
+            width: 220px;
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+    </style>
+</block>
+<block name="form">
+    <div class="tab-div">
+        <div id="tabbar-div">
+            <p>
+                <span class="tab-front">基础信息</span>
+                <span class="tab-back">商品描述</span>
+                <span class="tab-back">会员价格</span>
+                <span class="tab-back">商品属性</span>
+                <span class="tab-back">商品相册</span>
+                <span class="tab-back">相关文章</span>
+            </p>
+        </div>
+        <div id="tabbody-div">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">商品名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">LOGO</td>
+                <td>
+                    <input type="file" id="upload_logo" maxlength="60"/>
+                    <input type="hidden" id="logo" name="logo" value="{$logo}">
+                </td>
+            </tr>
+            <tr  class="upload-img-tr" style="display: none;">
+                <td class="label"></td>
+                <td>
+                    <div class="upload-img-box">
+                        <div class="upload-pre-item">
+                            <img src="__GOODS__{$logo}">
+                        </div></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">分类</td>
+                <td>
+                    <input type="text" disabled id="goods_category_text" name="goods_category_text" maxlength="60" value="选中下面的最子分类"/>
+                    <input type="hidden" id="goods_category_id" name="goods_category_id" value="{$goods_category_id}">
+                    <ul id="treeDemo" class="ztree"></ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">供货商</td>
+                <td>
+                    {:arr2select('supplier_id',$suppliers,$supplier_id)}
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">品牌</td>
+                <td>
+                    {:arr2select('brand_id',$brands,$brand_id)}
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">市场价</td>
+                <td>
+                    <input type="text" name="market_price" maxlength="60" value="{$market_price}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">本店价格</td>
+                <td>
+                    <input type="text" name="shop_price" maxlength="60" value="{$shop_price}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">库存类型</td>
+                <td>
+                    <input type="radio" name="stock_type" value="1" class="stock_type"/> 单库存单价格
+                    <input type="radio" name="stock_type" value="2" class="stock_type"/> 多单库存多价格
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr class="stock_tr">
+                <td class="label">库存</td>
+                <td>
+                    <input type="text" name="stock" class="stock" value="{$stock}"/>
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">是否上架</td>
+                <td>
+                    <input type="radio" name="is_on_sale" value="1" class="is_on_sale"/> 是
+                    <input type="radio" name="is_on_sale" value="0" class="is_on_sale"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">商品状态</td>
+                <td>
+                    <input type="checkbox" class="goods_status" name="goods_status[]" value="1">疯狂抢购
+                    <input type="checkbox" class="goods_status" name="goods_status[]" value="2">热卖商品
+                    <input type="checkbox" class="goods_status" name="goods_status[]" value="4">推荐商品
+                    <input type="checkbox" class="goods_status" name="goods_status[]" value="8">新品上架
+                    <input type="checkbox" class="goods_status" name="goods_status[]" value="16">猜您喜欢
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">状态</td>
+                <td>
+                    <input type="radio" name="status" value="1" class="status"/> 是
+                    <input type="radio" name="status" value="0"  class="status"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="60" value="{$sort|default=20}"/>
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+        </table>
+
+        <table cellspacing="1" cellpadding="3" width="100%" style="display: none" class="xxxxx">
+            <tr>
+                <td><textarea id="intro" name="intro">{$intro}</textarea> </td>
+
+            </tr>
+        </table>
+        <table cellspacing="1" cellpadding="3" width="100%"  style="display: none">
+            <volist name="memberLevels" id="memberLevel">
+            <tr>
+                <td class="label">{$memberLevel.name}</td>
+                <td>
+                    <input type="text" name="goodsMemberPrice[{$memberLevel.id}]" maxlength="60" value="{$goodsMemberPrices[$memberLevel['id']]}"/>
+                </td>
+            </tr>
+            </volist>
+        </table>
+        <table cellspacing="1" cellpadding="3" width="100%"  style="display: none">
+            <tr>
+                <td class="label">商品类型</td>
+                <td>
+                    {:arr2select('goods_type_id',$goodsTypes,$goods_type_id)}
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr/></td>
+            </tr>
+            <tbody id="attribute">
+
+            </tbody>
+
+
+        </table>
+        <style type="text/css">
+            .upload-pre-item{
+                position: relative;
+            }
+            .upload-pre-item a{
+                background-color: #ff004a;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+            }
+        </style>
+        <table cellspacing="1" cellpadding="3" width="100%"  style="display: none">
+            <tr>
+                <td id="gallery">
+                    <div class="upload-img-box">
+                        <volist name="goodsGalleryes" id="goodsGallery">
+                            <div class="upload-pre-item" style="display: inline-block">
+                                <img src="__GOODS__{$goodsGallery.path}!m">
+                                <a dbid="{$goodsGallery.id}">X</a>
+                            </div>
+                        </volist>
+                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="file" id="upload_gallery"></td>
+            </tr>
+        </table>
+        <table cellspacing="1" cellpadding="3" width="100%"  style="display: none">
+            <tr>
+                <td class="label" style="text-align: left">
+                    文章标题:<input type="text" class="keyword" name="keyword">
+                    <br/>
+                    <br/>
+                    <select multiple="multiple" class="left_select" style="width:500px" size="10">
+                    </select>
+                </td>
+                <td>
+                    <br/><br/>
+                    <input class="allToRight" type="button" value=">>"> <br/><br/>
+                    <input  class="ToRight" type="button" value=">"> <br/><br/>
+                    <input type="button" value="<"> <br/><br/>
+                    <input type="button" value="<<"><br/>
+                </td>
+                <td>
+                    <br/>
+                    <div id="article_hidden">
+
+                        <volist name="articles" id="article">
+                            <input type="hidden" name="article_id[]" value="{$article.article_id}"/>
+                        </volist>
+                    </div>
+                    <select multiple="multiple" class="right_select" style="width:500px"  size="10">
+                        <volist name="articles" id="article">
+                            <option value="{$article.article_id}">{$article.article_name}</option>
+                        </volist>
+                     </select>
+                </td>
+            </tr>
+        </table>
+        <div style="text-align: center">
+            <input type="hidden" name="id" value="{$id}"/>
+            <input type="submit" class="button" value=" 确定 "/>
+            <input type="reset" class="button" value=" 重置 "/>
+        </div>
+    </form>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <!-- 配置文件 -->
+    <script type="text/javascript" src="__UEDITOR__/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="__UEDITOR__/ueditor.all.js"></script>
+    <script type="text/javascript" src="__UPLOADIFY__/jquery.uploadify.min.js"></script>
+    <script type="text/javascript" src="__ZTREE__/js/jquery.ztree.core-3.5.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            ///////////////处理默认选中---开始//////////////////////
+            $('.is_on_sale').val([{$is_on_sale|default=1}]);
+
+            <notempty name='logo'>
+                //编辑时展示出logo的预览效果
+                $('.upload-img-tr').show();
+            </notempty>
+            ///////////////处理默认选中---结束//////////////////////
+
+
+            //////////////////切换效果--开始////////////////////
+            $('#tabbar-div span').click(function(){
+                //>>1.实现table颜色切换效果
+                $('#tabbar-div span').removeClass('tab-front').addClass('tab-back');
+                $(this).removeClass('tab-back').addClass('tab-front');
+
+                //>>2.先将所有的table隐藏, 让对应的table显示
+                //找到form下直接的table
+                $('#tabbody-div > form > table').hide();
+
+                //得到当前点击的span的索引;
+                var index  =$(this).index();
+                //显示对应的table
+                $('#tabbody-div > form > table').eq(index).show();
+
+                if(index==1){ //当用户点击第二个span标签时,再加载在线编辑器
+                    //////////////////初始化在线编辑器--开始////////////////////
+                    //intro是一个标签的id(建议该标签使用textarea)
+                    var ue = UE.getEditor('intro',{
+                        /*  toolbars: [
+                         ['fullscreen', 'source', 'undo', 'redo', 'bold']
+                         ],*/
+                        initialFrameHeight:1000  //初始化编辑器高度,默认320
+                    });
+                    //////////////////初始化在线编辑器--结束////////////////////
+                }
+
+            });
+            //////////////////切换效果--结束////////////////////
+
+
+
+            /////////////////加入上传文件组件的js------开始//////////////////////
+            /**
+             * 将一个上传表单元素变成一个上传插件
+             * $('#file_upload'):根据id找到上传表单元素
+             */
+            setTimeout(function(){  //解决导致浏览器崩溃的情况
+                $('#upload_logo').uploadify({
+                    'swf'      : '/Public/Admin/uploadify/uploadify.swf',  //指定flash的路径
+                    'uploader' : "{:U('Upload/index')}",   //上传文件时使用的请求地址
+                    'width'    : 145,//指定按钮的宽度
+                    'height'    : 25,//指定按钮的宽度
+                    'buttonText': '选择图片',  //按钮上的文本
+                    'debug'     :false,   //是否调试
+                    'removeTimeout' : 1,
+//              'fileObjName'     :'Filedata',   //上传文件的表单元素名字, 在服务器上需要通过:$_FILES['Filedata']
+                    'formData'      : {'dir' : 'goods'},  ///上传文件时指定额外发送给服务器的post参数.
+                    'multi'    : false, //该插件是否支持多文件上传
+                    'fileTypeExts' : '*.gif; *.jpg; *.png', //指定文件上传的类型
+                    'fileSizeLimit' : '2MB',  //限制上传的大小
+                    'onUploadSuccess' : function(file, data, response) {
+                        $('.upload-img-box img').attr('src','__GOODS__'+data+'!m');
+                        $('.upload-img-tr').show();  //让预览显示出来
+                        $('#logo').val(data); //将上传后的路径保存到隐藏域名中,为了表单提交时保存到数据库中
+                    },
+                    'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                        alert('上传失败!');
+                    }
+                });
+            },50);
+            /////////////////加入上传文件组件的js------结束///////////////////////
+
+
+
+            /////////////////分类树---------开始///////////////////////
+            //>>1.树的设置
+            var setting = {
+                data: {
+                    simpleData: {
+                        enable: true,
+                        pIdKey: "parent_id"
+                    }
+                },
+                callback: {
+                    //event事件对象, treeId标签的id     treeNode是点击的节点对象
+                    onClick: function(event, treeId, treeNode){
+                        $('#goods_category_text').val(treeNode.name);
+                        $('#goods_category_id').val(treeNode.id);  //真正提交给服务器的父分类id
+                    },
+                    beforeClick: function(treeId, treeNode){
+                        if(treeNode.isParent){
+                            var data = {
+                                'info':'只能够选中最子分类',
+                                'status':0
+                            }
+                            updateAlert(data);
+                        }
+                        return !treeNode.isParent;
+                    }
+                }
+            };
+            //>>2.树中所需要的数据
+            var zNodes = {$goodsCategoryes};
+            var zTree   = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+
+            <empty name='id'>
+                 //添加时默认选中第一个叶子节点
+                //得到的第一个叶子节点
+                var firstLeafNode = zTree.getNodesByFilter(function(node){
+                    return  !node.isParent;   //isParent == true: 父节点
+                }, true); //根据过滤器找到一个节点
+                zTree.selectNode(firstLeafNode);
+                $('#goods_category_text').val(firstLeafNode.name);
+                $('#goods_category_id').val(firstLeafNode.id);  //真正提交给服务器的父分类id
+              <else/>
+                //编辑时选中需要回显的节点
+                 var node = zTree.getNodeByParam('id', {$goods_category_id});
+                 zTree.selectNode(node);
+                 $('#goods_category_text').val(node.name);
+                 $('#goods_category_id').val(node.id);
+
+
+                //选中商品的状态
+                var goods_status = {$goods_status};  //7==>     000111
+                var goods_status_selectd = [];
+                if((goods_status & 1)>0){
+//                    goods_status_selectd[goods_status_selectd.length] = 1;
+                    goods_status_selectd.push(1);
+                }
+                if((goods_status & 2)>0){
+//                    goods_status_selectd[goods_status_selectd.length] = 2;
+                    goods_status_selectd.push(2);
+                }
+                if((goods_status & 4)>0){
+//                    goods_status_selectd[goods_status_selectd.length] = 4;
+                    goods_status_selectd.push(4);
+                }
+                $('.goods_status').val(goods_status_selectd);
+
+            </empty>
+
+
+
+
+
+            /////////////////加入相册的上传文件组件的js------开始//////////////////////
+        /**
+         * 将一个上传表单元素变成一个上传插件
+         * $('#file_upload'):根据id找到上传表单元素
+         */
+        setTimeout(function(){  //解决导致浏览器崩溃的情况
+            $('#upload_gallery').uploadify({
+                'swf'      : '/Public/Admin/uploadify/uploadify.swf',  //指定flash的路径
+                'uploader' : "{:U('Upload/index')}",   //上传文件时使用的请求地址
+                'width'    : 145,//指定按钮的宽度
+                'height'    : 25,//指定按钮的宽度
+                'buttonText': '选择图片',  //按钮上的文本
+                'debug'     :false,   //是否调试
+                'removeTimeout' : 1,
+//              'fileObjName'     :'Filedata',   //上传文件的表单元素名字, 在服务器上需要通过:$_FILES['Filedata']
+                'formData'      : {'dir' : 'goods'},  ///上传文件时指定额外发送给服务器的post参数.
+                'multi'    : true, //该插件是否支持多文件上传
+                'fileTypeExts' : '*.gif; *.jpg; *.png', //指定文件上传的类型
+                'fileSizeLimit' : '2MB',  //限制上传的大小
+                'onUploadSuccess' : function(file, data, response) {
+                    var item = '<div class="upload-pre-item" style="display: inline-block">\
+                    <input type="hidden" name="gallery[]" value="'+data+'">\
+                        <img src="__GOODS__'+data+'!m">\
+                         <a>X</a>\
+                    </div>';
+                    $(item).appendTo('#gallery .upload-img-box');
+                },
+                'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+                    alert('上传失败!');
+                }
+            });
+        },50);
+
+
+        //删除相册中的一个图片
+        $('#gallery').on('click','a',function(){
+                var id = $(this).attr('dbid');
+                var atag = $(this);
+                if(id){
+                    $.post('{:U('deleteGallery')}',{'gallery_id':id},function(data){
+                        //将a标签外面的div删除
+                        if(data.success){
+                            atag.closest('div').remove();
+                        }
+
+                    });
+                }else{
+                    //将a标签外面的div删除
+                    atag.closest('div').remove();
+                }
+        })
+        /////////////////加入相册上传文件组件的js------结束///////////////////////
+
+
+        //////////////////处理相关文章----开始//////////////////
+        $('.keyword').keyup(function(){
+                var keyword = $(this).val();
+                if(!keyword){
+                    //没有值不需要搜索..
+                    return false;
+                }
+            $.get("{:U('Goods/searchArticle')}",{'keyword':keyword},function(data){
+                //循环每行数据, 将data放到$()才能够使用each方法,并且each中传入函数,函数中的ths表示每个元素
+                var optionHtml = '';
+                $(data).each(function(){
+                    optionHtml+="<option value='"+this.id+"'>"+this.name+"</option>";
+                });
+                //将拼好的optionHtml放到 class="left_select" 中
+                $('.left_select').html(optionHtml);
+            });
+        });
+
+
+        $('.left_select').on('dblclick','option',function(){
+
+
+            //得到右边的所有option
+            var rightOptions = $('.right_select>option');
+            for(var i in rightOptions){
+                var rightOption = rightOptions[i];
+                //和当前左边点击的option做对比..
+                if(rightOption.value==this.value){
+                    //存在下面的不执行了...
+                    return;
+                }
+            }
+
+            $('.right_select').append(this);
+            rightSelectToHidden()
+        });
+
+        $('.right_select').on('dblclick','option',function(){
+            $('.left_select').append(this);
+            rightSelectToHidden()
+        });
+        $('.allToRight').on('click',function(){
+            $('.left_select>option').appendTo('.right_select');
+            rightSelectToHidden()
+        });
+
+        $('.ToRight').on('click',function(){
+            $('.left_select>option:selected').appendTo('.right_select');
+            rightSelectToHidden()
+        });
+
+
+        function rightSelectToHidden(){
+            var hiddenHtml='';
+            $('.right_select>option').each(function(){
+                hiddenHtml+="<input type='hidden' name='article_id[]' value='"+this.value+"'/>";
+            });
+            $('#article_hidden').html(hiddenHtml);
+        }
+        window.rightSelectToHidden = rightSelectToHidden;
+
+        //////////////////处理相关文章----结束//////////////////
+
+
+        //////////////////处理属性----开始//////////////////
+        $('.goods_type_id').change(function(){
+            var goods_type_id = $(this).val();
+            //根据商品类型的id查询出该类型下的所有属性
+            $.getJSON('{:U("Attribute/getListByGoodsTypeId")}',{'goods_type_id':goods_type_id},function(rows){
+                createAttributeField(rows);
+            });
+        });
+
+        /**
+         * attribute_type           input_type              表单元素
+              1                         1                       text
+              1                         2                       select
+              1                         3                      textarea
+              2                         2                      checkbox
+         */
+        function createAttributeField(rows){
+
+            //先清空原来的表单元素
+            $('#attribute').html('');
+
+            var attributeFieldHTML = '';
+            for(var i in rows){
+            var row = rows[i];
+            attributeFieldHTML+='<tr><td class="label">'+row.name+':</td><td>';
+
+             if(row.attribute_type==1){
+                 //表示单值
+                switch(row.input_type){
+                    case '1':
+                        attributeFieldHTML+='<input type="text" name="attribute['+row.id+']"/>';
+                        break;
+                    case '2':  //生成下拉框
+                        var optionHtml = "<select name='attribute["+row.id+"]'>";
+                            //如果是下拉框,值被保持在option_values中的
+                            for(var p in row['option_values']){
+                                optionHtml+="<option value="+row['option_values'][p]+">"+row['option_values'][p]+"</option>";
+                            }
+                           optionHtml += "</select>";
+                        attributeFieldHTML+=optionHtml;
+                        break;
+                    case '3':  //生成文本域
+                        attributeFieldHTML+='<textarea  name="attribute['+row.id+']"/></textarea>';
+                        break;
+                }
+
+             }else{
+                 //表示多值 (生成复选框)
+                 for(var p in row['option_values']) {
+                     attributeFieldHTML+= row['option_values'][p]+"<input name='attribute["+row.id+"][]' type='checkbox' value='"+row['option_values'][p]+"'>";
+                 }
+             }
+
+
+             attributeFieldHTML+="</td></tr>";
+            $('#attribute').html(attributeFieldHTML);
+            }
+
+        }
+
+
+        //编辑时需要根据后台提供的当前商品的类型下的属性数据创建表单元素
+        <notempty name="id">
+        var attributeJSON = {$attributeJSON};
+        createAttributeField(attributeJSON);
+
+        var goodsAttribute = {$goodsAttributes};
+        for(var m in goodsAttribute){
+            $(':input[name^="attribute['+m+']"]').val(goodsAttribute[m]);
+        }
+        </notempty>
+        //////////////////处理属性----结束//////////////////
+
+
+
+
+        $('.stock_type').val([{$stock_type|default=1}]);
+        $('.stock_type').click(function(){
+            var value =  $(this).val();
+            if(value==1){
+                $('.stock_tr').show();
+                $('.stock').prop('disabled',false);
+            }else{
+                $('.stock_tr').hide();
+                $('.stock').prop('disabled',true);
+            }
+        });
+
+
+
+        });
+    </script>
+</block>

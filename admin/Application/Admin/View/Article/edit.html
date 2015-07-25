@@ -1,0 +1,84 @@
+<extend name="Common:edit"/>
+<block name="form">
+    <form method="post" action="{:U()}">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">新闻名称</td>
+                <td>
+                    <input type="text" name="name" maxlength="60" value="{$name}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">新闻分类</td>
+                <td>
+                    {:arr2select('article_category_id',$articleCategoryes,$article_category_id)}
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea name="content" id="content" cols="60" rows="4">{$content}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"></td>
+                <td>
+
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">状态</td>
+                <td>
+                    <input type="radio" class="status" name="status" value="1"/> 是<input class="status" type="radio"
+                                                                                         name="status" value="0"/> 否
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">排序</td>
+                <td>
+                    <input type="text" name="sort" maxlength="60" value="{$sort|default=20}"/>
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"></td>
+                <td>
+
+
+                    <span class="require-field">*</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><br/>
+                    <input type="hidden" name="id" value="{$id}"/>
+                    <input type="submit" class="button ajax_post" value=" 确定 "/>
+                    <input type="reset" class="button" value=" 重置 "/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</block>
+<block name="js">
+    <!-- 配置文件 -->
+    <script type="text/javascript" src="__UEDITOR__/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="__UEDITOR__/ueditor.all.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var ue = UE.getEditor('content', {
+                /*  toolbars: [
+                 ['fullscreen', 'source', 'undo', 'redo', 'bold']
+                 ],*/
+//                initialFrameHeight:1000  //初始化编辑器高度,默认320
+            });
+        });
+    </script>
+</block>
